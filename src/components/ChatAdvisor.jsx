@@ -7,6 +7,45 @@ const ChatAdvisor = ({ onAskQuestion, plantContext, isVisible }) => {
 
   if (!isVisible) return null;
 
+  // Function to format AI response with proper formatting
+  const formatAIResponse = (message) => {
+    if (!message) return '';
+    
+    // Split message into lines and format each line
+    const lines = message.split('\n');
+    return lines.map((line, index) => {
+      const trimmedLine = line.trim();
+      
+      // Skip empty lines
+      if (!trimmedLine) return null;
+      
+      // Format section headers (lines starting with emojis)
+      if (/^[🌿💧☀️🌱❓🌟⚠️]/.test(trimmedLine)) {
+        return (
+          <div key={index} className="font-semibold text-lg text-gray-800 mb-2 mt-4 first:mt-0">
+            {trimmedLine}
+          </div>
+        );
+      }
+      
+      // Format bullet points
+      if (trimmedLine.startsWith('•')) {
+        return (
+          <div key={index} className="ml-4 mb-1 text-gray-700">
+            {trimmedLine}
+          </div>
+        );
+      }
+      
+      // Format regular text
+      return (
+        <div key={index} className="mb-2 text-gray-700 leading-relaxed">
+          {trimmedLine}
+        </div>
+      );
+    }).filter(Boolean); // Remove null entries
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!question.trim() || isLoading) return;
@@ -82,19 +121,27 @@ const ChatAdvisor = ({ onAskQuestion, plantContext, isVisible }) => {
           <div className="mb-6 space-y-4 max-h-96 overflow-y-auto">
             {chatHistory.map((chat, index) => (
               <div key={index} className={`flex ${chat.type === 'user' ? 'justify-end' : 'justify-start'}`}>
-                <div className={`max-w-xs lg:max-w-md px-4 py-2 rounded-lg ${
+                <div className={`max-w-xs lg:max-w-md px-4 py-3 rounded-lg ${
                   chat.type === 'user' 
                     ? 'bg-blue-600 text-white' 
                     : chat.type === 'error'
                     ? 'bg-red-100 text-red-700 border border-red-200'
-                    : 'bg-gray-100 text-gray-800'
+                    : 'bg-gray-50 text-gray-800 border border-gray-200'
                 }`}>
                   <div className="text-sm">
                     {chat.type === 'ai' && <span className="font-semibold">🤖 Plant Expert: </span>}
                     {chat.type === 'error' && <span className="font-semibold">❌ Error: </span>}
-                    <span>{chat.message}</span>
+                    
+                    {/* Format AI responses with proper structure */}
+                    {chat.type === 'ai' ? (
+                      <div className="mt-2 space-y-1">
+                        {formatAIResponse(chat.message)}
+                      </div>
+                    ) : (
+                      <span>{chat.message}</span>
+                    )}
                   </div>
-                  <div className={`text-xs mt-1 opacity-70 ${
+                  <div className={`text-xs mt-2 opacity-70 ${
                     chat.type === 'user' ? 'text-blue-100' : 'text-gray-500'
                   }`}>
                     {chat.timestamp.toLocaleTimeString()}

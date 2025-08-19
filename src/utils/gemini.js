@@ -33,8 +33,61 @@ export const generatePlantAdvice = async (plantInfo, healthInfo, userQuestion = 
     const healthScore = healthInfo?.healthScore || 1.0;
     const diseases = healthInfo?.diseases || [];
 
-    const context = `
-You are an expert plant care advisor. Based on the following plant analysis, provide helpful, actionable advice.
+    // Determine if this is a chat interaction or initial advice
+    const isChatInteraction = !!userQuestion;
+
+    if (isChatInteraction) {
+      // CHAT MODE: Provide focused, conversational responses
+      const chatContext = `
+You are a friendly, knowledgeable plant care expert having a conversation with a plant owner. The user has already received comprehensive care advice for their plant, so don't repeat that information.
+
+PLANT CONTEXT (already provided to user):
+- Plant: ${plantName} (${scientificName})
+- Health: ${isHealthy ? 'Healthy' : 'Has some issues'}
+- Health Score: ${healthScore.toFixed(2)}/1.0
+
+USER'S SPECIFIC QUESTION: ${userQuestion}
+
+INSTRUCTIONS:
+- Give a direct, helpful answer to their specific question
+- Keep it conversational and friendly (like talking to a friend)
+- Reference the plant context when relevant, but don't repeat the full care advice
+- Keep responses concise (2-4 sentences max)
+- Use a few relevant emojis naturally in the conversation
+- Don't use formal section headers or bullet points
+- Don't end with "encouraging message" - just answer naturally
+
+Example response style:
+"Based on your ${plantName}'s current health, I'd recommend watering when the top inch of soil feels dry. Since it's doing well overall, you can stick to a regular schedule. Just make sure it's not sitting in water! 💧🌱"
+      `;
+
+      console.log('Generating chat response...');
+      const result = await model.generateContent(chatContext);
+      const response = result.response;
+      
+      if (!response) {
+        throw new Error('No response received from Gemini AI');
+      }
+      
+      const text = response.text();
+      
+      if (!text || text.trim().length === 0) {
+        throw new Error('Empty response received from Gemini AI');
+      }
+      
+      return text;
+    } else {
+      // INITIAL ADVICE MODE: Provide comprehensive formatted care advice
+      const context = `
+You are an expert plant care advisor with a warm, encouraging personality. Based on the following plant analysis, provide helpful, actionable advice that promotes environmental awareness and sustainable living.
+
+IMPORTANT: Format your response with these requirements:
+- Use bullet points (•) for all care tips and recommendations
+- Include relevant emojis for visual appeal (🌱💧☀️🌿🌍♻️ etc.)
+- Organize information in clear sections with emoji headers
+- End with an encouraging, motivational message
+- Keep advice practical, actionable, and beginner-friendly
+- Use clear, encouraging language throughout
 
 PLANT IDENTIFICATION:
 - Plant Name: ${plantName}
@@ -56,34 +109,40 @@ ${diseases.map(disease => `
 `).join('')}
 ` : ''}
 
-${userQuestion ? `USER QUESTION: ${userQuestion}` : ''}
+Please provide your response in this exact format:
 
-Please provide:
-1. A brief summary of the plant's current condition
-2. Specific care recommendations based on identified issues (if any)
-3. General care tips for this plant species (watering, lighting, soil, etc.)
-4. Seasonal care advice if relevant
-${userQuestion ? '5. A direct answer to the user\'s specific question' : ''}
+🌿 Plant Care Summary
+[Brief summary of current condition]
 
-Keep advice practical, actionable, and beginner-friendly. Use clear, encouraging language.
-Format your response in a readable way with clear sections.
-    `;
+💧 Care Recommendations
+[Bullet points with emojis for specific care needs]
 
-    console.log('Generating AI advice...');
-    const result = await model.generateContent(context);
-    const response = result.response;
-    
-    if (!response) {
-      throw new Error('No response received from Gemini AI');
+☀️ General Care Tips
+[Bullet points with emojis for watering, lighting, soil, etc.]
+
+🌱 Seasonal Care
+[Bullet points with emojis for seasonal considerations]
+
+🌟 Encouraging Message
+[End with a motivational, encouraging message about plant care and environmental stewardship]
+      `;
+
+      console.log('Generating comprehensive AI advice...');
+      const result = await model.generateContent(context);
+      const response = result.response;
+      
+      if (!response) {
+        throw new Error('No response received from Gemini AI');
+      }
+      
+      const text = response.text();
+      
+      if (!text || text.trim().length === 0) {
+        throw new Error('Empty response received from Gemini AI');
+      }
+      
+      return text;
     }
-    
-    const text = response.text();
-    
-    if (!text || text.trim().length === 0) {
-      throw new Error('Empty response received from Gemini AI');
-    }
-    
-    return text;
   } catch (error) {
     console.error('Error generating advice:', error);
     
@@ -92,38 +151,47 @@ Format your response in a readable way with clear sections.
       throw error; // Re-throw API key errors
     }
     
-    // Create fallback advice
+    // Create appropriate fallback based on interaction type
     const plantName = plantInfo?.name || 'your plant';
     const isHealthy = healthInfo?.isHealthy ?? true;
     
-    const fallbackAdvice = `
-# Plant Care Advice for ${plantName}
+    if (userQuestion) {
+      // Chat mode fallback
+      return `I'm having trouble accessing my full knowledge right now, but I can help with general plant care questions! For your ${plantName}, I'd recommend checking the care advice above for specific details. What would you like to know more about? 🌱`;
+    } else {
+      // Initial advice mode fallback
+      const fallbackAdvice = `
+🌿 Plant Care Summary
+✅ Your ${plantName} is ready for some TLC! ${isHealthy ? 'It appears to be in good health, but there\'s always room for improvement.' : 'Some issues have been detected that need attention, but don\'t worry - we can fix this together!'}
 
-## Current Condition
-${isHealthy ? 
-  '✅ Your plant appears to be in good health!' : 
-  '⚠️ Some issues have been detected that need attention.'}
+💧 Care Recommendations
+• 💧 Check soil moisture regularly - most plants prefer soil that's slightly moist but not waterlogged
+• 🌱 Ensure proper drainage to prevent root rot
+• 🌿 Monitor for any changes in leaf color or texture
+• 🌍 Consider the plant's natural habitat when creating care routines
 
-## General Care Tips
-- **Watering**: Check soil moisture regularly. Most plants prefer soil that's slightly moist but not waterlogged.
-- **Lighting**: Ensure your plant gets appropriate light for its species. Most houseplants prefer bright, indirect light.
-- **Humidity**: Many plants benefit from increased humidity, especially in dry indoor environments.
-- **Temperature**: Keep your plant in a stable temperature range, away from drafts and heating/cooling vents.
+☀️ General Care Tips
+• 💧 Water when the top inch of soil feels dry to the touch
+• ☀️ Provide bright, indirect light for most houseplants
+• 🌱 Use well-draining potting soil appropriate for your plant type
+• 🌿 Maintain consistent room temperature (65-75°F / 18-24°C)
+• 💨 Ensure good air circulation around your plant
+• 🌱 Repot when roots become crowded (usually every 1-2 years)
 
-${healthInfo?.diseases?.length > 0 ? `
-## Detected Issues
-${healthInfo.diseases.map(disease => `- **${disease.name}**: ${disease.description || 'Monitor this condition and consider appropriate treatment.'}`).join('\n')}
-` : ''}
+🌱 Seasonal Care
+• 🌸 Spring: Increase watering and consider repotting if needed
+• ☀️ Summer: Monitor for pests and provide extra humidity if needed
+• 🍂 Fall: Reduce watering as growth slows down
+• ❄️ Winter: Reduce watering and avoid cold drafts
 
-## Next Steps
-1. Monitor your plant daily for any changes
-2. Adjust care routine based on the plant's response
-3. Consider consulting local gardening resources for species-specific advice
+🌟 Encouraging Message
+Remember, every plant parent starts somewhere! Your ${plantName} is lucky to have someone who cares enough to seek advice. Plant care is a journey of learning and growth - just like your plants, you'll get better with time. Every small step you take toward better plant care is also a step toward a greener, more sustainable world. Keep growing! 🌱✨
 
-*Note: AI plant advisor is temporarily unavailable, but these general guidelines should help keep your plant healthy.*
-    `;
-    
-    return fallbackAdvice;
+*Note: AI plant advisor is temporarily unavailable, but these enhanced guidelines should help keep your plant healthy and happy.*
+      `;
+      
+      return fallbackAdvice;
+    }
   }
 };
 
