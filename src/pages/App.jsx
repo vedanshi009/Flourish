@@ -6,6 +6,7 @@ import SetupTest from '../components/SetUpTest';
 import UploadForm from '../components/UploadForm';
 import AnalysisResults from '../components/AnalysisResults';
 import ChatAdvisor from '../components/ChatAdvisor';
+import QuoteBanner from '../components/QuoteBanner';
 import { analyzePlant } from '../utils/plantid';
 import { generatePlantAdvice } from '../utils/gemini';
 
@@ -139,6 +140,9 @@ function App() {
       </header>
 
       <main className="max-w-6xl mx-auto px-4 py-8">
+        {/* Quote Banner - Daily Inspiration */}
+        <QuoteBanner />
+        
         {/* Console Log Display for Debugging */}
         {debugMode && (
           <div className="max-w-2xl mx-auto mb-6">
