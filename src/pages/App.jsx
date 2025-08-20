@@ -9,6 +9,8 @@ import ChatAdvisor from '../components/ChatAdvisor';
 import QuoteBanner from '../components/QuoteBanner';
 import UniversalPlantChatbot from '../components/UniversalPlantChatbot';
 import CareSchedulerButton from '../components/CareSchedulerButton';
+import GardenButton from '../components/GardenButton';
+import { GardenProvider } from '../contexts/GardenContext';
 import { analyzePlant } from '../utils/plantid';
 import { generatePlantAdvice } from '../utils/gemini';
 
@@ -16,6 +18,7 @@ function App() {
   const [showTest, setShowTest] = useState(true);
   const [debugMode, setDebugMode] = useState(true);
   const [analysisData, setAnalysisData] = useState(null);
+  const [imageFile, setImageFile] = useState(null);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [error, setError] = useState(null);
   const [showChat, setShowChat] = useState(false);
@@ -32,6 +35,7 @@ function App() {
 
     setIsAnalyzing(true);
     setError(null);
+    setImageFile(imageFile); // Store the image file for saving to garden
 
     try {
       console.log('🔍 Starting analysis...');
@@ -77,45 +81,51 @@ function App() {
 
   if (showTest) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-green-50 to-blue-50 py-8">
-        <div className="max-w-4xl mx-auto px-4">
-          <div className="text-center mb-8">
-            <h1 className="text-3xl font-bold text-gray-800">🧪 Plant Health AI - Debug Mode</h1>
-            <p className="text-gray-600 mt-2">Testing your API connections and environment setup</p>
-          </div>
-          
-          <SetupTest />
-          
-          <div className="text-center mt-8">
-            <button
-              onClick={() => setShowTest(false)}
-              className="bg-green-600 hover:bg-green-700 text-white px-8 py-3 rounded-lg font-medium transition-colors shadow-md"
-              disabled={!hasPlantIdKey}
-            >
-              {hasPlantIdKey ? '🌱 Continue to Main App' : '🔑 Fix API Keys First'}
-            </button>
-          </div>
-          
-          {!hasPlantIdKey && (
-            <div className="mt-6 p-4 bg-red-50 border border-red-200 rounded-lg text-center">
-              <p className="text-red-700">
-                ⚠️ Plant.id API key is required to continue. Please follow the setup instructions above.
-              </p>
+      <GardenProvider>
+        <div className="min-h-screen bg-gradient-to-br from-green-50 to-blue-50 py-8">
+          <div className="max-w-4xl mx-auto px-4">
+            <div className="text-center mb-8">
+              <h1 className="text-3xl font-bold text-gray-800">🧪 Plant Health AI - Debug Mode</h1>
+              <p className="text-gray-600 mt-2">Testing your API connections and environment setup</p>
             </div>
-          )}
+            
+            <SetupTest />
+            
+            <div className="text-center mt-8">
+              <button
+                onClick={() => setShowTest(false)}
+                className="bg-green-600 hover:bg-green-700 text-white px-8 py-3 rounded-lg font-medium transition-colors shadow-md"
+                disabled={!hasPlantIdKey}
+              >
+                {hasPlantIdKey ? '🌱 Continue to Main App' : '🔑 Fix API Keys First'}
+              </button>
+            </div>
+            
+            {!hasPlantIdKey && (
+              <div className="mt-6 p-4 bg-red-50 border border-red-200 rounded-lg text-center">
+                <p className="text-red-700">
+                  ⚠️ Plant.id API key is required to continue. Please follow the setup instructions above.
+                </p>
+              </div>
+            )}
+          </div>
+          
+          {/* Garden Button - Available even in test mode */}
+          <GardenButton />
+          
+          {/* Universal Plant Chatbot - Available even in test mode */}
+          <UniversalPlantChatbot
+            isOpen={isUniversalChatOpen}
+            onToggle={() => setIsUniversalChatOpen(!isUniversalChatOpen)}
+          />
         </div>
-        
-        {/* Universal Plant Chatbot - Available even in test mode */}
-        <UniversalPlantChatbot
-          isOpen={isUniversalChatOpen}
-          onToggle={() => setIsUniversalChatOpen(!isUniversalChatOpen)}
-        />
-      </div>
+      </GardenProvider>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-green-50 to-blue-50">
+    <GardenProvider>
+      <div className="min-h-screen bg-gradient-to-br from-green-50 to-blue-50">
       {/* Debug Header */}
       <div className="bg-yellow-100 border-b border-yellow-300 px-4 py-2 text-center text-sm">
         <span className="text-yellow-800">
@@ -154,6 +164,9 @@ function App() {
         
         {/* Care Scheduler - Always Available */}
         <CareSchedulerButton plantInfo={analysisData?.plantInfo || null} />
+        
+        {/* Garden Button - Fixed Position */}
+        <GardenButton />
         
         {/* Console Log Display for Debugging */}
         {debugMode && (
@@ -214,6 +227,7 @@ function App() {
               plantInfo={analysisData.plantInfo}
               healthInfo={analysisData.healthInfo}
               initialAdvice={analysisData.advice}
+              imageFile={imageFile}
               onChatWithAI={() => setShowChat(true)}
             />
 
@@ -247,7 +261,8 @@ function App() {
         isOpen={isUniversalChatOpen}
         onToggle={() => setIsUniversalChatOpen(!isUniversalChatOpen)}
       />
-    </div>
+      </div>
+    </GardenProvider>
   );
 }
 

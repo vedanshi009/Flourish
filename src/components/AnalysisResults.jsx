@@ -1,13 +1,53 @@
-import React, { useState } from 'react'; // Added missing import
+import React, { useState } from 'react';
+import { useGarden } from '../contexts/GardenContext';
+import Toast from './Toast';
 
-export default function AnalysisResults({ plantInfo, healthInfo, initialAdvice, onClose, onChatWithAI }) {
+export default function AnalysisResults({ plantInfo, healthInfo, initialAdvice, onClose, onChatWithAI, imageFile }) {
   const [isExpanded, setIsExpanded] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
+  const [saveSuccess, setSaveSuccess] = useState(false);
+  const { addPlant } = useGarden();
 
   if (!plantInfo && !healthInfo && !initialAdvice) return null;
 
-  const handleSaveToGarden = () => {
-    // TODO: Implement save functionality
-    alert('Save to garden feature coming soon!');
+  const handleSaveToGarden = async () => {
+    if (!plantInfo) return;
+    
+    setIsSaving(true);
+    try {
+      // Convert image file to base64 if available
+      let imageData = null;
+      if (imageFile) {
+        imageData = await new Promise((resolve) => {
+          const reader = new FileReader();
+          reader.onload = () => resolve(reader.result);
+          reader.readAsDataURL(imageFile);
+        });
+      }
+
+      // Prepare plant data for saving
+      const plantData = {
+        name: plantInfo.name,
+        scientificName: plantInfo.scientificName,
+        image: imageData,
+        advice: initialAdvice,
+        plantInfo: plantInfo,
+        healthInfo: healthInfo
+      };
+
+      // Add to garden
+      addPlant(plantData);
+      
+      // Show success message
+      setSaveSuccess(true);
+      setTimeout(() => setSaveSuccess(false), 3000);
+      
+    } catch (error) {
+      console.error('Error saving plant to garden:', error);
+      alert('Failed to save plant to garden. Please try again.');
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   const handleChatWithAI = () => {
@@ -125,9 +165,16 @@ export default function AnalysisResults({ plantInfo, healthInfo, initialAdvice, 
         <div className="flex gap-3 pt-4 border-t border-gray-100">
           <button 
             onClick={handleSaveToGarden}
-            className="flex-1 bg-green-600 hover:bg-green-700 text-white px-4 py-3 rounded-lg font-medium transition-colors"
+            disabled={isSaving}
+            className={`flex-1 px-4 py-3 rounded-lg font-medium transition-colors ${
+              isSaving 
+                ? 'bg-gray-400 cursor-not-allowed' 
+                : saveSuccess 
+                  ? 'bg-green-500 text-white' 
+                  : 'bg-green-600 hover:bg-green-700 text-white'
+            }`}
           >
-            Save to My Garden
+            {isSaving ? 'Saving...' : saveSuccess ? '✓ Saved to Garden!' : 'Save to My Garden'}
           </button>
           <button 
             onClick={handleChatWithAI}
@@ -136,6 +183,14 @@ export default function AnalysisResults({ plantInfo, healthInfo, initialAdvice, 
             Chat with AI Advisor
           </button>
         </div>
+
+        {/* Toast Notification */}
+        <Toast
+          message="🌱 Plant successfully saved to your garden!"
+          type="success"
+          isVisible={saveSuccess}
+          onClose={() => setSaveSuccess(false)}
+        />
 
         {/* Timestamp */}
         <div className="text-xs text-gray-500 text-center pt-2">
