@@ -248,7 +248,7 @@ const QuoteBanner = () => {
   };
 
   return (
-    <div className="relative overflow-hidden rounded-3xl mb-8 group">
+    <div className="relative overflow-hidden rounded-3xl mb-6 group">
       {/* Enhanced Gradient Background with better blending */}
       <div className="absolute inset-0 bg-gradient-to-br from-emerald-400 via-cyan-500 to-blue-600 opacity-85"></div>
       <div className="absolute inset-0 bg-gradient-to-tl from-green-500 via-teal-500 to-cyan-600 opacity-75"></div>
@@ -267,34 +267,34 @@ const QuoteBanner = () => {
       <div className="absolute top-1/2 right-10 w-12 h-12 bg-white/25 rounded-full animate-bounce opacity-35" style={{ animationDelay: '4s', animationDuration: '7s' }}></div>
       
       {/* Main content with improved glassmorphism */}
-      <div className="relative bg-white/90 backdrop-blur-xl m-1.5 rounded-3xl p-8 md:p-10 shadow-2xl transition-all duration-500 group-hover:bg-white/95 group-hover:shadow-3xl">
+      <div className="relative bg-white/90 dark:bg-gray-800/90 backdrop-blur-xl m-1.5 rounded-3xl p-6 md:p-8 shadow-2xl transition-all duration-500 group-hover:bg-white/95 dark:group-hover:bg-gray-800/95 group-hover:shadow-3xl">
         <div className={`transition-opacity duration-500 ${fadeClass}`}>
           {/* Enhanced category badge with better spacing */}
-          <div className="flex items-center justify-between mb-6">
+          <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-3">
-              <span className="text-2xl">{getCategoryEmoji(currentQuote.category)}</span>
-              <span className="text-sm font-semibold text-gray-700 bg-gray-100/80 backdrop-blur-sm px-4 py-2 rounded-full border border-gray-200/50">
+              <span className="text-xl">{getCategoryEmoji(currentQuote.category)}</span>
+              <span className="text-xs font-semibold text-gray-700 dark:text-gray-300 bg-gray-100/80 dark:bg-gray-700/80 backdrop-blur-sm px-3 py-1.5 rounded-full border border-gray-200/50 dark:border-gray-600/50">
                 {getCategoryLabel(currentQuote.category)}
               </span>
             </div>
-            <div className="text-xs text-gray-600 bg-gray-50/80 backdrop-blur-sm px-3 py-2 rounded-full border border-gray-200/50">
+            <div className="text-xs text-gray-600 dark:text-gray-400 bg-gray-50/80 dark:bg-gray-700/80 backdrop-blur-sm px-2 py-1.5 rounded-full border border-gray-200/50 dark:border-gray-600/50">
               Daily Inspiration
             </div>
           </div>
           
           {/* Enhanced quote text with better typography */}
-          <blockquote className="text-xl md:text-2xl lg:text-3xl font-medium text-gray-800 leading-relaxed mb-6 relative">
-            <span className="text-5xl text-emerald-500 absolute -top-3 -left-2 font-serif opacity-80">"</span>
-            <span className="ml-8 leading-relaxed">{currentQuote.text}</span>
-            <span className="text-5xl text-emerald-500 font-serif opacity-80">"</span>
+          <blockquote className="text-lg md:text-xl lg:text-2xl font-medium text-gray-800 dark:text-gray-200 leading-relaxed mb-4 relative">
+            <span className="text-4xl text-emerald-500 absolute -top-2 -left-1 font-serif opacity-80">"</span>
+            <span className="ml-6 leading-relaxed">{currentQuote.text}</span>
+            <span className="text-4xl text-emerald-500 font-serif opacity-80">"</span>
           </blockquote>
           
           {/* Enhanced author section with better hierarchy */}
-          <div className="flex flex-col gap-2">
-            <cite className="text-lg md:text-xl font-semibold text-gray-700 not-italic">
+          <div className="flex flex-col gap-1">
+            <cite className="text-base md:text-lg font-semibold text-gray-700 dark:text-gray-300 not-italic">
               — {currentQuote.author}
             </cite>
-            <p className="text-sm text-gray-600 font-medium">
+            <p className="text-xs text-gray-600 dark:text-gray-400 font-medium">
               {currentQuote.title}
             </p>
           </div>

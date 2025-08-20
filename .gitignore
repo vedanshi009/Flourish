@@ -22,3 +22,11 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Test and temporary files
+test-*.js
+temp-*.js
+*.test.js
+*.spec.js
+test/
+temp/

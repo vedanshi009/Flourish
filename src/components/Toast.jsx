@@ -1,3 +1,4 @@
+//File: src/components/Toast.jsx
 import React, { useEffect } from 'react';
 import { CheckCircle, XCircle, X } from 'lucide-react';
 
