@@ -7,6 +7,7 @@ import UploadForm from '../components/UploadForm';
 import AnalysisResults from '../components/AnalysisResults';
 import ChatAdvisor from '../components/ChatAdvisor';
 import QuoteBanner from '../components/QuoteBanner';
+import UniversalPlantChatbot from '../components/UniversalPlantChatbot';
 import { analyzePlant } from '../utils/plantid';
 import { generatePlantAdvice } from '../utils/gemini';
 
@@ -17,6 +18,7 @@ function App() {
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [error, setError] = useState(null);
   const [showChat, setShowChat] = useState(false);
+  const [isUniversalChatOpen, setIsUniversalChatOpen] = useState(false);
 
   // Check if environment is properly configured
   const hasPlantIdKey = !!import.meta.env.VITE_PLANTID_API_KEY;
@@ -101,6 +103,12 @@ function App() {
             </div>
           )}
         </div>
+        
+        {/* Universal Plant Chatbot - Available even in test mode */}
+        <UniversalPlantChatbot
+          isOpen={isUniversalChatOpen}
+          onToggle={() => setIsUniversalChatOpen(!isUniversalChatOpen)}
+        />
       </div>
     );
   }
@@ -227,6 +235,14 @@ function App() {
           </div>
         )}
       </main>
+      
+      {/* Universal Plant Chatbot - Always available */}
+      <UniversalPlantChatbot
+        plantInfo={analysisData?.plantInfo || null}
+        healthInfo={analysisData?.healthInfo || null}
+        isOpen={isUniversalChatOpen}
+        onToggle={() => setIsUniversalChatOpen(!isUniversalChatOpen)}
+      />
     </div>
   );
 }
