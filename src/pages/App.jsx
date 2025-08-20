@@ -8,6 +8,7 @@ import AnalysisResults from '../components/AnalysisResults';
 import ChatAdvisor from '../components/ChatAdvisor';
 import QuoteBanner from '../components/QuoteBanner';
 import UniversalPlantChatbot from '../components/UniversalPlantChatbot';
+import CareSchedulerButton from '../components/CareSchedulerButton';
 import { analyzePlant } from '../utils/plantid';
 import { generatePlantAdvice } from '../utils/gemini';
 
@@ -150,6 +151,9 @@ function App() {
       <main className="max-w-6xl mx-auto px-4 py-8">
         {/* Quote Banner - Daily Inspiration */}
         <QuoteBanner />
+        
+        {/* Care Scheduler - Always Available */}
+        <CareSchedulerButton plantInfo={analysisData?.plantInfo || null} />
         
         {/* Console Log Display for Debugging */}
         {debugMode && (
