@@ -127,15 +127,16 @@ function App() {
   return (
     <DarkModeProvider>
       <GardenProvider>
-        <div className="min-h-screen bg-gradient-to-br from-green-50 to-blue-50 dark:from-gray-900 dark:to-gray-800">
+        
+        <div className="min-h-screen">
           
           {/* Header */}
           <header className="bg-white dark:bg-gray-800 shadow-sm border-b border-green-100 dark:border-gray-700">
             <div className="max-w-6xl mx-auto px-4 py-6">
               <div className="flex items-center justify-between">
                 <div className="text-center flex-1">
-                  <h1 className="text-4xl font-bold text-gray-800 dark:text-white">
-                    🌸 Flourish
+                <h1 className="text-4xl md:text-5xl font-bold font-display tracking-tight text-gray-800 dark:text-white">
+                🌸 Flourish
                   </h1>
                   <p className="text-gray-600 dark:text-gray-300 mt-2">
                     Your AI-powered plant care companion

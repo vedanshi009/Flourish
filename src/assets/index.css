@@ -11,6 +11,24 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+
+  background-image: url('/background.png'); 
+
+  background-size: cover;
+
+  background-position: center center;
+
+  background-repeat: no-repeat;
+
+  background-attachment: fixed;
+  background-color: #558bc2;
+}
+.dark body {
+  /* Remove the background image */
+  background-image: none;
+
+  /* Set the desired solid background color for dark mode */
+  background-color: #111827; /* This is Tailwind's gray-900 */
 }
 
 #root {

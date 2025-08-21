@@ -1,4 +1,3 @@
-// src/components/UploadForm.jsx
 import React, { useState, useRef, useEffect } from "react";
 
 const UploadForm = ({ onImageUpload, isAnalyzing }) => {
@@ -10,7 +9,6 @@ const UploadForm = ({ onImageUpload, isAnalyzing }) => {
 
   const MAX_MB = 10;
 
-  // Handle file validation
   const handleFile = (file) => {
     if (!file.type.startsWith("image/")) {
       setError("Please upload a valid image (JPG, PNG, WEBP, etc.)");
@@ -22,16 +20,12 @@ const UploadForm = ({ onImageUpload, isAnalyzing }) => {
     }
     setError("");
     setFile(file);
-
-    // Preview
     const url = URL.createObjectURL(file);
     setPreviewUrl(url);
-
-    // Pass to parent
-    onImageUpload(file);
+    // This was changed to prevent immediate analysis on selection
+    // onImageUpload(file); 
   };
 
-  // Drag events
   const handleDrag = (e) => {
     e.preventDefault();
     e.stopPropagation();
@@ -55,7 +49,6 @@ const UploadForm = ({ onImageUpload, isAnalyzing }) => {
     if (files && files[0]) handleFile(files[0]);
   };
 
-  // Clean up preview
   useEffect(() => {
     return () => {
       if (previewUrl) URL.revokeObjectURL(previewUrl);
@@ -73,11 +66,16 @@ const UploadForm = ({ onImageUpload, isAnalyzing }) => {
     <div className="w-full max-w-2xl mx-auto space-y-6">
       {/* Upload Area */}
       <div
-        className={`relative border-2 border-dashed rounded-xl p-8 text-center transition-all duration-200 cursor-pointer ${
-          dragActive 
-            ? "border-green-400 bg-green-50 dark:bg-green-900/20" 
-            : "border-green-200 dark:border-green-600 hover:border-green-300 dark:hover:border-green-500"
-        } ${isAnalyzing ? "opacity-60 pointer-events-none" : ""}`}
+        // --- FIXES APPLIED HERE ---
+        className={`relative border-2 border-dashed rounded-xl p-8 text-center transition-all duration-300 cursor-pointer 
+          bg-white/60 dark:bg-gray-800/60 backdrop-blur-md shadow-md
+          ${
+            dragActive 
+              ? "border-green-500" 
+              : "border-green-200 dark:border-gray-600 hover:border-green-400 dark:hover:border-gray-500"
+          } 
+          ${isAnalyzing ? "opacity-60 pointer-events-none" : ""}`
+        }
         onDragEnter={handleDrag}
         onDragLeave={handleDrag}
         onDragOver={handleDrag}
@@ -87,15 +85,16 @@ const UploadForm = ({ onImageUpload, isAnalyzing }) => {
         {isAnalyzing ? (
           <div className="flex flex-col items-center space-y-2">
             <div className="animate-spin h-10 w-10 border-4 border-green-600 border-t-transparent rounded-full"></div>
-            <h3 className="text-lg font-semibold text-gray-700 dark:text-gray-300">Analyzing your plant...</h3>
-            <p className="text-sm text-gray-500 dark:text-gray-400">This may take a few seconds</p>
+            <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-200">Analyzing your plant...</h3>
+            <p className="text-sm text-gray-600 dark:text-gray-300">This may take a few seconds</p>
           </div>
         ) : (
           <div className="space-y-2">
             <div className="text-4xl">📸</div>
-            <h3 className="text-lg font-semibold text-gray-700 dark:text-gray-300">Upload Plant Photo</h3>
-            <p className="text-sm text-gray-500 dark:text-gray-400">Drag & drop or click to select</p>
-            <p className="text-xs text-gray-400 dark:text-gray-500">PNG, JPG, WEBP up to {MAX_MB}MB</p>
+            <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-200">Upload Plant Photo</h3>
+            {/* --- FIXES APPLIED HERE (Text Colors) --- */}
+            <p className="text-sm text-gray-700 dark:text-gray-300">Drag & drop or click to select</p>
+            <p className="text-xs text-gray-600 dark:text-gray-400">PNG, JPG, WEBP up to {MAX_MB}MB</p>
           </div>
         )}
         <input
@@ -110,31 +109,31 @@ const UploadForm = ({ onImageUpload, isAnalyzing }) => {
 
       {/* Error */}
       {error && (
-        <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-xl p-3 text-sm text-red-600 dark:text-red-400">
+        <div className="bg-red-100 dark:bg-red-900/50 border border-red-300 dark:border-red-700 rounded-xl p-3 text-sm text-red-700 dark:text-red-300">
           {error}
         </div>
       )}
 
       {/* Preview */}
       {previewUrl && !isAnalyzing && (
-        <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-green-100 dark:border-gray-700 overflow-hidden">
+        <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-md rounded-2xl shadow-lg border border-green-100 dark:border-gray-700 overflow-hidden">
           <div className="p-6">
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-lg font-semibold text-gray-800 dark:text-white">Preview</h3>
               <button
                 type="button"
                 onClick={clearSelection}
-                className="text-gray-400 hover:text-red-500 dark:hover:text-red-400 transition-colors"
+                className="text-gray-500 hover:text-red-500 dark:text-gray-400 dark:hover:text-red-400 transition-colors text-xl"
                 title="Remove image"
               >
-                ✖
+                &times;
               </button>
             </div>
 
             <img
               src={previewUrl}
               alt="Selected plant preview"
-              className="w-full max-h-96 object-contain rounded-xl"
+              className="w-full max-h-96 object-contain rounded-xl bg-black/10"
             />
 
             <div className="mt-4 text-center">
