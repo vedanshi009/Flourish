@@ -1,7 +1,9 @@
 /* src/assets/index.css */
+@import url('https://fonts.googleapis.com/css2?family=Mali:wght@700&display=swap');
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
 
 /* Custom styles for your app */
 body {
@@ -21,7 +23,7 @@ body {
   background-repeat: no-repeat;
 
   background-attachment: fixed;
-  background-color: #558bc2;
+  background-color: #cbd3db;
 }
 .dark body {
   /* Remove the background image */

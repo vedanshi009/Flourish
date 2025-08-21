@@ -136,7 +136,7 @@ function App() {
               <div className="flex items-center justify-between">
                 <div className="text-center flex-1">
                 <h1 className="text-4xl md:text-5xl font-bold font-display tracking-tight text-gray-800 dark:text-white">
-                🌸 Flourish
+                🌸Flourish
                   </h1>
                   <p className="text-gray-600 dark:text-gray-300 mt-2">
                     Your AI-powered plant care companion
