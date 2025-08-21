@@ -1,5 +1,5 @@
 // FILE: src/pages/App.jsx
-// Main Plant Health AI Advisor application
+// Flourish - AI-Powered Plant Care & Health Advisor
 
 import React, { useState } from 'react';
 import UploadForm from '../components/UploadForm';
@@ -11,7 +11,7 @@ import CareSchedulerButton from '../components/CareSchedulerButton';
 import GardenButton from '../components/GardenButton';
 import DarkModeToggle from '../components/DarkModeToggle';
 import CreditWarning from '../components/CreditWarning';
-import ManualPlantForm from '../components/ManualPlantForm'; // CORRECTED: Was ManualPlantEntry
+import ManualPlantForm from '../components/ManualPlantForm';
 import { GardenProvider } from '../contexts/GardenContext';
 import { DarkModeProvider } from '../contexts/DarkModeContext';
 import { analyzePlant } from '../utils/plantid';
@@ -33,7 +33,7 @@ function App() {
 
     setIsAnalyzing(true);
     setError(null);
-    setImageFile(imageFile); // Store the image file for saving to garden
+    setImageFile(imageFile);
 
     try {
       console.log('🔍 Starting analysis...');
@@ -135,10 +135,13 @@ function App() {
               <div className="flex items-center justify-between">
                 <div className="text-center flex-1">
                   <h1 className="text-4xl font-bold text-gray-800 dark:text-white">
-                    🌱 Plant Health AI Advisor
+                    🌸 Flourish
                   </h1>
                   <p className="text-gray-600 dark:text-gray-300 mt-2">
-                    Upload a photo to identify your plant or add plants manually to conserve credits
+                    Your AI-powered plant care companion
+                  </p>
+                  <p className="text-sm text-green-600 dark:text-green-400 mt-1">
+                    Plant identification • Health analysis • Care scheduling • Expert advice
                   </p>
                 </div>
                 <div className="flex items-center gap-4">
@@ -185,10 +188,9 @@ function App() {
             )}
 
             {showManualEntry && (
-              // CORRECTED: Was ManualPlantEntry
               <ManualPlantForm
-                isOpen={showManualEntry} // Pass isOpen prop
-                onClose={() => setShowManualEntry(false)} // Pass onClose prop
+                isOpen={showManualEntry}
+                onClose={() => setShowManualEntry(false)}
                 onSubmit={handleManualPlantEntry}
                 isSubmitting={isAnalyzing}
               />
@@ -220,7 +222,7 @@ function App() {
                     {showManualEntry ? 'Processing manual entry...' : 'Analyzing plant...'}
                   </h3>
                   <p className="text-sm text-gray-500 dark:text-gray-400 mt-2">
-                    Please wait...
+                    Please wait while Flourish works its magic...
                   </p>
                 </div>
               </div>
@@ -245,7 +247,7 @@ function App() {
                     }}
                     className="bg-green-600 hover:bg-green-700 text-white px-8 py-3 rounded-lg font-medium transition-colors shadow-md"
                   >
-                    🌿 Add Another Plant
+                    🌿 Analyze Another Plant
                   </button>
                   
                   <button
