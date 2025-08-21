@@ -97,8 +97,6 @@ Each plant in the garden includes:
 ## Future Enhancements
 
 - Plant growth timeline photos
-- Care schedule integration
-- Plant sharing between users
 - Advanced analytics and insights
 - Seasonal care recommendations
 - Plant community features

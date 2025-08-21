@@ -1,14 +1,5 @@
 // FILE: src/utils/gemini.js
-import { GoogleGenerativeAI } from "@google/generative-ai";
-
-const GEMINI_API_KEY = import.meta.env.VITE_GEMINI_API_KEY;
-
-if (!GEMINI_API_KEY) {
-  console.warn('Gemini API key is not configured. AI features will use fallback advice.');
-}
-
-const genAI = GEMINI_API_KEY ? new GoogleGenerativeAI(GEMINI_API_KEY) : null;
-const model = genAI ? genAI.getGenerativeModel({ model: "gemini-1.5-flash" }) : null;
+// ... (imports and constants at the top remain the same)
 
 // Generate plant advice based on analysis
 export const generatePlantAdvice = async (plantInfo, healthInfo, userQuestion = "") => {
@@ -30,6 +21,7 @@ export const generatePlantAdvice = async (plantInfo, healthInfo, userQuestion = 
     const isChatInteraction = !!userQuestion;
 
     if (isChatInteraction) {
+      // Chat interaction 
       const chatContext = `
         You are a friendly, knowledgeable plant care expert in a conversation.
         PLANT CONTEXT: ${plantName} (${scientificName}), Health: ${isHealthy ? 'Healthy' : 'Has issues'}.
@@ -39,24 +31,26 @@ export const generatePlantAdvice = async (plantInfo, healthInfo, userQuestion = 
       const result = await model.generateContent(chatContext);
       return result.response.text();
     } else {
+      
       const context = `
         You are an expert plant care advisor. Provide helpful, actionable advice with a warm, encouraging tone.
         
-        IMPORTANT: Format your response using bullet points (•) and emojis (🌱💧☀️) in clear sections. End with an encouraging message.
+        IMPORTANT: Format your response using Markdown. Use bold for headings (e.g., **🌿 Plant Care Summary**). Use bullet points (•) for lists. Use emojis like 🌱💧☀️ naturally.
 
         PLANT ID: ${plantName} (${scientificName}), Confidence: ${(confidence * 100).toFixed(1)}%
         HEALTH: ${isHealthy ? 'Healthy' : `Issues Detected: ${diseases.map(d => d.name).join(', ')}`}
 
         Please provide your response in this exact format:
-        🌿 Plant Care Summary
+        **🌿 Plant Care Summary**
         [Brief summary]
-        💧 Care Recommendations
+        **💧 Care Recommendations**
         [Bullet points]
-        ☀️ General Care Tips
+        **☀️ General Care Tips**
         [Bullet points]
-        🌟 Encouraging Message
+        🌟
         [Motivational message]
       `;
+      
       const result = await model.generateContent(context);
       return result.response.text();
     }
@@ -72,22 +66,24 @@ export const generatePlantAdvice = async (plantInfo, healthInfo, userQuestion = 
       return `I'm having trouble accessing my full knowledge right now, but I can help with general questions about your ${plantName}! What would you like to know? 🌱`;
     }
     
+    
     return `
-      🌿 Plant Care Summary
+      **🌿 Plant Care Summary**
       ✅ Your ${plantName} is ready for some TLC! 
       
-      💧 Care Recommendations
+      **💧 Care Recommendations**
       • 💧 Check soil moisture regularly.
       • 🌱 Ensure proper drainage to prevent root rot.
 
-      ☀️ General Care Tips
+      **☀️ General Care Tips**
       • 💧 Water when the top inch of soil feels dry.
       • ☀️ Provide bright, indirect light.
 
-      🌟 Encouraging Message
+      🌟
       Plant care is a journey of learning and growth. Keep going! 🌱✨
 
       *Note: AI advisor is temporarily unavailable, but these general guidelines should help.*
     `;
+    
   }
 };

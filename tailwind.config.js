@@ -30,6 +30,8 @@ export default {
       },
       fontFamily: {
         'sans': ['Inter', 'system-ui', 'sans-serif'],
+        // This line creates the special class for your heading
+        'display': ['Mali', 'cursive'],
       },
       animation: {
         'pulse-green': 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',

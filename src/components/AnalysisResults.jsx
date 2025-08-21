@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useGarden } from '../contexts/GardenContext';
 import Toast from './Toast';
 import { X } from 'lucide-react';
+import ReactMarkdown from 'react-markdown'; 
 
 export default function AnalysisResults({ plantInfo, healthInfo, initialAdvice, onClose, onChatWithAI, imageFile }) {
   const [isExpanded, setIsExpanded] = useState(false);
@@ -85,14 +86,14 @@ export default function AnalysisResults({ plantInfo, healthInfo, initialAdvice, 
 
         {initialAdvice && (
           <div>
-            <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-2">🤖 AI Care Advice</h3>
-            <div className="prose prose-sm dark:prose-invert max-w-none text-gray-700 dark:text-gray-300 leading-relaxed">
-               {initialAdvice.split('\n').map((para, idx) => (
-                 para.trim() && <p key={idx}>{para}</p>
-               ))}
-            </div>
+          <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-2">🤖 AI Care Advice</h3>
+          <div className="prose prose-sm dark:prose-invert max-w-none text-gray-700 dark:text-gray-300 leading-relaxed">
+            <ReactMarkdown>
+              {initialAdvice}
+            </ReactMarkdown>
           </div>
-        )}
+        </div>
+      )}
 
         <div className="flex gap-3 pt-4 border-t border-gray-100 dark:border-gray-700">
           <button 
