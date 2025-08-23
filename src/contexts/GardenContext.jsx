@@ -14,6 +14,8 @@ export const GardenProvider = ({ children }) => {
   const [plants, setPlants] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
 
+  const [schedules, setSchedules] = useState([]);
+
   // Load plants from localStorage on component mount
   useEffect(() => {
     const savedPlants = localStorage.getItem('gardenPlants');
@@ -31,6 +33,18 @@ export const GardenProvider = ({ children }) => {
   useEffect(() => {
     localStorage.setItem('gardenPlants', JSON.stringify(plants));
   }, [plants]);
+
+  // useEffects to load and save schedules
+  useEffect(() => {
+    const savedSchedules = localStorage.getItem('plantCareSchedules');
+    if (savedSchedules) {
+      setSchedules(JSON.parse(savedSchedules));
+    }
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem('plantCareSchedules', JSON.stringify(schedules));
+  }, [schedules]);
 
   const addPlant = (plantData) => {
     const newPlant = {
@@ -59,6 +73,31 @@ export const GardenProvider = ({ children }) => {
     setPlants(prev => prev.map(plant => 
       plant.id === plantId ? { ...plant, ...updates } : plant
     ));
+  };
+
+  const addSchedule = (scheduleData) => {
+    const newSchedule = { 
+      id: Date.now(), 
+      ...scheduleData,
+      createdAt: new Date().toISOString()
+    };
+    setSchedules(prev => [...prev, newSchedule]);
+  };
+
+  const updateSchedule = (scheduleData) => {
+    setSchedules(prev => prev.map(s => s.id === scheduleData.id ? scheduleData : s));
+  };
+
+
+  const deleteSchedule = (scheduleId) => {
+    setSchedules(prev => prev.filter(s => s.id !== scheduleId));
+  };
+
+  const markScheduleAsDone = (scheduleId) => {
+    const today = new Date().toISOString().split('T')[0];
+    setSchedules(prev => 
+      prev.map(s => s.id === scheduleId ? { ...s, lastDone: today } : s)
+    );
   };
 
   const getPlantById = (plantId) => {
@@ -95,7 +134,12 @@ export const GardenProvider = ({ children }) => {
     getPlantsByType,
     getTotalPlants,
     getHealthyPlants,
-    getPlantsNeedingCare
+    getPlantsNeedingCare,
+    schedules,
+    addSchedule,
+    updateSchedule,
+    deleteSchedule,
+    markScheduleAsDone,
   };
 
   return (

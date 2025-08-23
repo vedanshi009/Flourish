@@ -1,5 +1,17 @@
 // FILE: src/utils/gemini.js
-// ... (imports and constants at the top remain the same)
+
+import { GoogleGenerativeAI } from "@google/generative-ai";
+
+// This line reads the variable from your .env file or Vercel settings
+const GEMINI_API_KEY = import.meta.env.VITE_GEMINI_API_KEY;
+
+if (!GEMINI_API_KEY) {
+  console.warn('Gemini API key is not configured. AI features will use fallback advice.');
+}
+
+const genAI = GEMINI_API_KEY ? new GoogleGenerativeAI(GEMINI_API_KEY) : null;
+const model = genAI ? genAI.getGenerativeModel({ model: "gemini-1.5-flash" }) : null;
+
 
 // Generate plant advice based on analysis
 export const generatePlantAdvice = async (plantInfo, healthInfo, userQuestion = "") => {
