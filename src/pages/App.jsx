@@ -1,6 +1,4 @@
 // FILE: src/pages/App.jsx
-// Flourish - AI-Powered Plant Care & Health Advisor
-
 import React, { useState } from 'react';
 import UploadForm from '../components/UploadForm';
 import AnalysisResults from '../components/AnalysisResults';
@@ -159,7 +157,7 @@ function App() {
             <GardenButton />
 
             {/* Main App Content */}
-            {!analysisData && (
+            {!analysisData && !isAnalyzing && (
               <div className="max-w-2xl mx-auto space-y-6">
                 <UploadForm 
                   onImageUpload={handleImageUpload}
@@ -180,10 +178,6 @@ function App() {
                     📝 Add Plant Manually
                     <span className="text-xs bg-blue-500 px-2 py-1 rounded-full">Save Credits</span>
                   </button>
-                  
-                  <p className="text-sm text-gray-500 dark:text-gray-400 mt-2">
-                    Know your plant? Add it manually to avoid using Plant.id credits
-                  </p>
                 </div>
               </div>
             )}
@@ -215,15 +209,16 @@ function App() {
               </div>
             )}
 
+            {/* This is now the ONLY loading indicator */}
             {isAnalyzing && (
               <div className="max-w-2xl mx-auto mt-6">
-                <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-green-100 dark:border-gray-700 p-6 text-center">
+                <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-md rounded-2xl shadow-lg border border-green-100 dark:border-gray-700 p-6 text-center">
                   <div className="animate-spin h-8 w-8 border-4 border-green-600 border-t-transparent rounded-full mx-auto mb-4"></div>
                   <h3 className="text-lg font-semibold text-gray-700 dark:text-gray-300">
                     {showManualEntry ? 'Processing manual entry...' : 'Analyzing plant...'}
                   </h3>
                   <p className="text-sm text-gray-500 dark:text-gray-400 mt-2">
-                    Please wait while Flourish works its magic...
+                    Please wait while SustainaGarden works its magic...
                   </p>
                 </div>
               </div>
@@ -238,7 +233,6 @@ function App() {
                   imageFile={imageFile}
                   onChatWithAI={() => setShowChat(true)}
                 />
-
                 <div className="text-center mt-6 space-x-4">
                   <button
                     onClick={() => {
@@ -250,7 +244,6 @@ function App() {
                   >
                     🌿 Analyze Another Plant
                   </button>
-                  
                   <button
                     onClick={() => setShowManualEntry(true)}
                     className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-lg font-medium transition-colors shadow-md"
@@ -258,7 +251,6 @@ function App() {
                     📝 Add Manually
                   </button>
                 </div>
-
                 {showChat && (
                   <ChatAdvisor 
                     onAskQuestion={handleFollowUpQuestion}
